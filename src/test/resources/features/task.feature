@@ -13,5 +13,13 @@ Feature: Automatic Testing
     Then the search result is greater than "1000" ads
 
 
+  Scenario: User cannot add a contact to the address book if the user is not logged in.
+
+    Given go to the home address
+    And within a random ad that has an option
+    When on the Oglas page, click the button Dodaj uadresar
+    Then the login modal is displayed
+
+
 
 

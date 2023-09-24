@@ -1,5 +1,6 @@
 package page_factory;
 
+import data.AppConfigData;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 public class AllPages {
 
@@ -50,15 +52,21 @@ public class AllPages {
 
     private WebElement loginElement;
 
-    public WebDriver driver;
+    public final WebDriver driver;
     private final JavascriptExecutor jsExecutor;
     private final WebDriverWait wait;
+    private final AppConfigData appConfigData;
 
     public AllPages(WebDriver driver) {
         this.driver = driver;
+        this.appConfigData = new AppConfigData();
         PageFactory.initElements(driver, this);
         jsExecutor = (JavascriptExecutor) driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    }
+
+    public void goHomePage() {
+        driver.get(appConfigData.getHomeAddress());
     }
 
 
@@ -102,7 +110,8 @@ public class AllPages {
     public void verifyNumberSearchFound(Integer expectedResult) {
         wait.until(ExpectedConditions.elementToBeClickable(paginationList.get(1)));
         WebElement countWebElement = divSearchResults.findElement(By.xpath(".//span"));
-      //  wait.until(w -> countWebElement.getText().equals("0"));
+        wait.until(ExpectedConditions.elementToBeClickable(paginationList.get(0)));
+        ;
         String foundAdsCountString = countWebElement.getText();
         foundAdsCountString = foundAdsCountString.substring(0, foundAdsCountString.indexOf(' '));
         foundAdsCountString = foundAdsCountString.replaceAll("\\.", "");
@@ -111,4 +120,36 @@ public class AllPages {
                 "(expected: " + expectedResult + ", actual: " + foundAdsCount + ") :: ");
     }
 
+    public void verifyFormLoginExist() {
+        try {
+            this.loginElement = driver.findElement(By.cssSelector("[class*=\"LoginModal\"]"));
+            Assertions.assertNotNull(this.loginElement);
+        } catch (Exception e) {
+            Assertions.fail(" :: The modal login was not found on the page :: ");
+        }
+    }
+
+    public void clickAddToAddressBook() {
+        btnAddToAddressBook.click();
+    }
+
+    public void goRandomAdd() {
+        selectRandomAdd();
+        boolean found = false;
+        while (!found) {
+            try {
+                WebElement element = driver.findElement(By.xpath("//button[span[text()='Dodajte u adresar']]"));
+                found = true;
+            } catch (NoSuchElementException e) {
+                goHomePage();
+                selectRandomAdd();
+            }
+        }
+    }
+
+    public void selectRandomAdd() {
+        jsExecutor.executeScript("arguments[0].click();", adsList
+                .get(new Random()
+                        .nextInt(adsList.size())));
+    }
 }

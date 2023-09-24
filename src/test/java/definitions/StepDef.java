@@ -19,7 +19,6 @@ import java.time.Duration;
 public class StepDef {
 
     public static WebDriver driver;
-    private AppConfigData appConfigData;
     private AllPages allPages;
 
     @Before
@@ -40,11 +39,12 @@ public class StepDef {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
         allPages = new AllPages(driver);
-        appConfigData = new AppConfigData();
+
     }
 
     @After(order = 0)
     public void afterClass() throws InterruptedException {
+        Thread.sleep(3000);
         driver.quit();
     }
 
@@ -60,11 +60,12 @@ public class StepDef {
 
     @Given("go to the home address")
     public void go_to_the_home_address() {
-        driver.get(appConfigData.getHomeAddress());
+       allPages.goHomePage();
     }
 
     @Given("within a random ad that has an option")
     public void withinARandomAdThatHasAnOption() {
+        allPages.goRandomAdd();
     }
 
 
@@ -95,19 +96,18 @@ public class StepDef {
 
     @When("on the Oglas page, click the button Dodaj u adresar")
     public void onTheOglasPageClickTheButtonDodajUAdresar() {
+        allPages.clickAddToAddressBook();
     }
-
-
-
 
 
     @Then("the search result is greater than {string} ads")
     public void the_search_result_is_greater_than_ads(String expectedNumberOfAdsFound) {
-       allPages.verifyNumberSearchFound(Integer.parseInt(expectedNumberOfAdsFound));
+        allPages.verifyNumberSearchFound(Integer.parseInt(expectedNumberOfAdsFound));
     }
 
     @Then("the login modal is displayed")
     public void theLoginModalIsDisplayed() {
+        allPages.verifyFormLoginExist();
     }
 }
 

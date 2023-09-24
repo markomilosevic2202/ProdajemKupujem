@@ -98,19 +98,55 @@
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>3.0.0-M4</version>-->
-<!--                <configuration>-->
-<!--                    <includes>-->
-<!--                        <include>**/CucumberRunner*.java</include>-->
-<!--                    </includes>-->
-<!--                    <testFailureIgnore>false</testFailureIgnore>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <includes>
+                        <include>**/CucumberRunner*.java</include>
+                    </includes>
+                    <testFailureIgnore>false</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>tech.grasshopper</groupId>
+                <artifactId>cucumber-pdf-plugin</artifactId>
+                <version>1.12.0</version>
+                <executions>
+                    <execution>
+                        <id>report</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>pdfreport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <cucumberJsonReportDirectory>${project.build.directory}/json-report</cucumberJsonReportDirectory>
+                    <cucumberPdfReportDirectory>secret</cucumberPdfReportDirectory>
+                    <cucumberPdfReportDirectoryTimeStamp>d M yy H m s</cucumberPdfReportDirectoryTimeStamp>
+                    <title>KupujemProdajem - [FE] Address Book</title>
+                    <titleColor>#080707</titleColor>
+                    <!--                    <titleColor>#DE1D1D</titleColor>-->
+                    <!--                    <passColor>#6ed83c</passColor>-->
+                    <!--                    <failColor>#960025</failColor>-->
+                    <!--                    <skipColor>#DA0F2A</skipColor>-->
+                    <displayFeature>true</displayFeature>
+                    <displayScenario>true</displayScenario>
+                    <displayDetailed>true</displayDetailed>
+                    <displayAttached>true</displayAttached>
+                    <displayExpanded>false</displayExpanded>
+
+                    <skipHooks>false</skipHooks>
+                    <skipScenarioHooks>false</skipScenarioHooks>
+                    <skipStepHooks>false</skipStepHooks>
+
+                    <strictCucumber6Behavior>true</strictCucumber6Behavior>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 

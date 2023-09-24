@@ -17,7 +17,7 @@ Feature: Automatic Testing
 
     Given go to the home address
     And within a random ad that has an option
-    When on the Oglas page, click the button Dodaj uadresar
+    When on the Oglas page, click the button Dodaj u adresar
     Then the login modal is displayed
 
 

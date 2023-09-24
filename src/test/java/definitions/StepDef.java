@@ -2,11 +2,64 @@ package definitions;
 
 
 
+import data.ChromeOptionsConfig;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.time.Duration;
 
 public class StepDef {
+
+
+
+
+    public static WebDriver driver;
+
+
+    @Before
+    public void before() {
+        //Ovo terba da se zove chrome Optons config
+        //Data treba bude deskriptivan a ne 1,2,3,4....
+        ChromeOptionsConfig chromeOptionsConfig = new ChromeOptionsConfig();
+
+        System.setProperty(chromeOptionsConfig.getDriver(), chromeOptionsConfig.getAddress());
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments(chromeOptionsConfig.getData3());
+        chromeOptions.addArguments(chromeOptionsConfig.getData4()); // open Browser in maximized mode
+        chromeOptions.addArguments(chromeOptionsConfig.getData5()); // disabling infobars
+        chromeOptions.addArguments(chromeOptionsConfig.getData6()); // disabling extensions
+        chromeOptions.addArguments(chromeOptionsConfig.getData7()); // applicable to windows os only
+        chromeOptions.addArguments(chromeOptionsConfig.getData8()); // overcome limited resource problems
+        chromeOptions.addArguments(chromeOptionsConfig.getData9()); // Bypass OS security model
+        driver = new ChromeDriver(chromeOptions);
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+
+    }
+
+    @After(order = 0)
+    public void afterClass() throws InterruptedException {
+        driver.quit();
+    }
+
+    @After(order = 1)
+    public void makeScreenshot(Scenario scenario) { //ime ne valja
+        if (scenario.isFailed()) {
+            TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+            final byte[] src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(src, "image/png", "screenshot");
+        }
+    }
 
 
 
@@ -42,8 +95,8 @@ public class StepDef {
     public void on_the_model_pretrazi_detaljno_click_on_the_button_primeni_filtere() {
 
     }
-    @When("on the Oglas page, click the button Dodaj uadresar")
-    public void onTheOglasPageClickTheButtonDodajUadresar() {
+    @When("on the Oglas page, click the button Dodaj u adresar")
+    public void onTheOglasPageClickTheButtonDodajUAdresar() {
     }
 
 

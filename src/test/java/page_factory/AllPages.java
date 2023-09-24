@@ -1,10 +1,10 @@
 package page_factory;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -14,16 +14,16 @@ public class AllPages {
 
 
     @FindBy(id = "react-select-categoryId-input")
-    WebElement inpCategory;
+    WebElement inputCategory;
 
     @FindBy(id = "react-select-groupId-input")
-    WebElement inpGroup;
+    WebElement inputGroup;
 
     @FindBy(id = "priceFrom")
-    WebElement inpPriceFrom;
+    WebElement inputPriceFrom;
 
     @FindBy(id = "react-select-currency-input")
-    WebElement inpCurrency;
+    WebElement inputCurrency;
 
     @FindBy(id = "hasPriceyes")
     WebElement chbHasPriceyes;
@@ -43,15 +43,15 @@ public class AllPages {
     List<WebElement> adsList;
 
     @FindBy(xpath = "//button[span[text()='Dodajte u adresar']]")
-    private WebElement btnAddToAddressBook;
+    WebElement btnAddToAddressBook;
 
     @FindBy(xpath = "//h1[contains(text(), 'Ulogujte se')]")
-    private List<WebElement> listH1Login;
+    List<WebElement> listH1Login;
 
     private WebElement loginElement;
 
     public WebDriver driver;
-    private JavascriptExecutor jsExecutor;
+    private final JavascriptExecutor jsExecutor;
     private final WebDriverWait wait;
 
     public AllPages(WebDriver driver) {
@@ -59,6 +59,56 @@ public class AllPages {
         PageFactory.initElements(driver, this);
         jsExecutor = (JavascriptExecutor) driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    }
+
+
+    public void clickBtnSearchDetail() {
+        WebElement element = (WebElement) jsExecutor.executeScript("return document.querySelector('button[aria-label=\"Pretražite detaljno \"]')");
+        element.click();
+    }
+
+    public void inputAction(String inputType, String value) {
+        WebElement inputWebElement;
+        if (inputType.equals("CATEGORY")) {
+            inputWebElement = inputCategory;
+        } else if (inputType.equals("GROUP")) {
+            inputWebElement = inputGroup;
+        } else if (inputType.equals("PRICE_TO")) {
+            inputWebElement = inputPriceFrom;
+        } else {
+            inputWebElement = null;
+            throw new InvalidArgumentException(" :: Unknown input type :: ");
+        }
+        inputWebElement.sendKeys(value);
+        inputWebElement.sendKeys(Keys.RETURN);
+
+    }
+
+    public void checkCheckboxHasPriceYes() {
+        if (!chbHasPriceyes.isSelected()) {
+            jsExecutor.executeScript("arguments[0].click();", chbHasPriceyes);
+        }
+    }
+
+    public void conditionSelectOptions(String options) {
+        selCondition.sendKeys(options);
+        selCondition.sendKeys(Keys.RETURN);
+    }
+
+    public void clickApplyFilters() {
+        btnApplyFilters.click();
+    }
+
+    public void verifyNumberSearchFound(Integer expectedResult) {
+        wait.until(ExpectedConditions.elementToBeClickable(paginationList.get(1)));
+        WebElement countWebElement = divSearchResults.findElement(By.xpath(".//span"));
+      //  wait.until(w -> countWebElement.getText().equals("0"));
+        String foundAdsCountString = countWebElement.getText();
+        foundAdsCountString = foundAdsCountString.substring(0, foundAdsCountString.indexOf(' '));
+        foundAdsCountString = foundAdsCountString.replaceAll("\\.", "");
+        Integer foundAdsCount = Integer.parseInt(foundAdsCountString);
+        Assertions.assertTrue(expectedResult < foundAdsCount, " :: The number of ads found is lower than expected " +
+                "(expected: " + expectedResult + ", actual: " + foundAdsCount + ") :: ");
     }
 
 }

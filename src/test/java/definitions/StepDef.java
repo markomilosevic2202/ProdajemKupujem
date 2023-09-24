@@ -1,7 +1,7 @@
 package definitions;
 
 
-
+import data.AppConfigData;
 import data.ChromeOptionsConfig;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -9,28 +9,23 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import page_factory.AllPages;
 
 import java.time.Duration;
 
 public class StepDef {
 
-
-
-
     public static WebDriver driver;
-
+    private AppConfigData appConfigData;
+    private AllPages allPages;
 
     @Before
     public void before() {
-        //Ovo terba da se zove chrome Optons config
-        //Data treba bude deskriptivan a ne 1,2,3,4....
-        ChromeOptionsConfig chromeOptionsConfig = new ChromeOptionsConfig();
 
+        ChromeOptionsConfig chromeOptionsConfig = new ChromeOptionsConfig();
         System.setProperty(chromeOptionsConfig.getDriver(), chromeOptionsConfig.getAddress());
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments(chromeOptionsConfig.getData3());
@@ -44,7 +39,8 @@ public class StepDef {
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
-
+        allPages = new AllPages(driver);
+        appConfigData = new AppConfigData();
     }
 
     @After(order = 0)
@@ -53,7 +49,7 @@ public class StepDef {
     }
 
     @After(order = 1)
-    public void makeScreenshot(Scenario scenario) { //ime ne valja
+    public void makeScreenshot(Scenario scenario) {
         if (scenario.isFailed()) {
             TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
             final byte[] src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
@@ -62,39 +58,41 @@ public class StepDef {
     }
 
 
-
-
     @Given("go to the home address")
     public void go_to_the_home_address() {
-
+        driver.get(appConfigData.getHomeAddress());
     }
+
     @Given("within a random ad that has an option")
     public void withinARandomAdThatHasAnOption() {
     }
 
 
-
-
     @When("in the header, click on the button Pretraži detalnjo")
     public void in_the_header_click_on_the_button_pretrazi_detalnjo() {
-
+        allPages.clickBtnSearchDetail();
     }
+
     @When("on the model Pretraži detaljno in the input element {string} enter the parameter {string}")
-    public void on_the_model_pretrazi_detaljno_in_the_input_element_enter_the_parameter(String string, String string2) {
-
+    public void on_the_model_pretrazi_detaljno_in_the_input_element_enter_the_parameter(String input, String value) {
+        allPages.inputAction(input, value);
     }
+
     @When("on the model Pretraži detaljno select checkbox Samo sa cenom")
     public void on_the_model_pretrazi_detaljno_select_checkbox_samo_sa_cenom() {
-
+        allPages.checkCheckboxHasPriceYes();
     }
+
     @When("on the model Pretraži detaljno in the select element check the option {string}")
-    public void on_the_model_pretrazi_detaljno_in_the_select_element_check_the_option(String string) {
-
+    public void on_the_model_pretrazi_detaljno_in_the_select_element_check_the_option(String value) {
+        allPages.conditionSelectOptions(value);
     }
+
     @When("on the model Pretraži detaljno click on the button Primeni filtere")
     public void on_the_model_pretrazi_detaljno_click_on_the_button_primeni_filtere() {
-
+        allPages.clickApplyFilters();
     }
+
     @When("on the Oglas page, click the button Dodaj u adresar")
     public void onTheOglasPageClickTheButtonDodajUAdresar() {
     }
@@ -103,14 +101,10 @@ public class StepDef {
 
 
 
-
-
-
     @Then("the search result is greater than {string} ads")
-    public void the_search_result_is_greater_than_ads(String string) {
-
+    public void the_search_result_is_greater_than_ads(String expectedNumberOfAdsFound) {
+       allPages.verifyNumberSearchFound(Integer.parseInt(expectedNumberOfAdsFound));
     }
-
 
     @Then("the login modal is displayed")
     public void theLoginModalIsDisplayed() {

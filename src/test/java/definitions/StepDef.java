@@ -1,7 +1,7 @@
 package definitions;
 
 
-import data.AppConfigData;
+
 import data.ChromeOptionsConfig;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -44,7 +44,6 @@ public class StepDef {
 
     @After(order = 0)
     public void afterClass() throws InterruptedException {
-        Thread.sleep(3000);
         driver.quit();
     }
 
@@ -63,7 +62,7 @@ public class StepDef {
        allPages.goHomePage();
     }
 
-    @Given("within a random ad that has an option")
+    @When("within a random ad that has an option")
     public void withinARandomAdThatHasAnOption() {
         allPages.goRandomAdd();
     }
@@ -109,6 +108,7 @@ public class StepDef {
     public void theLoginModalIsDisplayed() {
         allPages.verifyFormLoginExist();
     }
+
 }
 
 

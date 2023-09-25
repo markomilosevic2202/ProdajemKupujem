@@ -7,7 +7,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
@@ -24,20 +23,18 @@ public class AllPages {
     @FindBy(id = "priceFrom")
     WebElement inputPriceFrom;
 
-    @FindBy(id = "react-select-currency-input")
-    WebElement inputCurrency;
-
     @FindBy(id = "hasPriceyes")
-    WebElement chbHasPriceyes;
+    WebElement checkboxHasPriceyes;
 
     @FindBy(id = "react-select-condition-input")
-    WebElement selCondition;
+    WebElement selectCondition;
 
     @FindBy(xpath = "//button[span[contains(text(), 'Primeni filtere')]]")
-    WebElement btnApplyFilters;
+    WebElement buttonApplyFilters;
 
     @FindBy(xpath = "//div[a[contains(text(), 'Početna')]]")
     WebElement divSearchResults;
+
     @FindBy(xpath = "//a[contains(@class, 'Pagination')]")
     List<WebElement> paginationList;
 
@@ -45,13 +42,10 @@ public class AllPages {
     List<WebElement> adsList;
 
     @FindBy(xpath = "//button[span[text()='Dodajte u adresar']]")
-    WebElement btnAddToAddressBook;
+    WebElement buttonAddToAddressBook;
 
-    @FindBy(xpath = "//h1[contains(text(), 'Ulogujte se')]")
-    List<WebElement> listH1Login;
 
     private WebElement loginElement;
-
     public final WebDriver driver;
     private final JavascriptExecutor jsExecutor;
     private final WebDriverWait wait;
@@ -62,7 +56,7 @@ public class AllPages {
         this.appConfigData = new AppConfigData();
         PageFactory.initElements(driver, this);
         jsExecutor = (JavascriptExecutor) driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     public void goHomePage() {
@@ -93,25 +87,24 @@ public class AllPages {
     }
 
     public void checkCheckboxHasPriceYes() {
-        if (!chbHasPriceyes.isSelected()) {
-            jsExecutor.executeScript("arguments[0].click();", chbHasPriceyes);
+        if (!checkboxHasPriceyes.isSelected()) {
+            jsExecutor.executeScript("arguments[0].click();", checkboxHasPriceyes);
         }
     }
 
     public void conditionSelectOptions(String options) {
-        selCondition.sendKeys(options);
-        selCondition.sendKeys(Keys.RETURN);
+        selectCondition.sendKeys(options);
+        selectCondition.sendKeys(Keys.RETURN);
     }
 
     public void clickApplyFilters() {
-        btnApplyFilters.click();
+        buttonApplyFilters.click();
     }
 
     public void verifyNumberSearchFound(Integer expectedResult) {
         wait.until(ExpectedConditions.elementToBeClickable(paginationList.get(1)));
         WebElement countWebElement = divSearchResults.findElement(By.xpath(".//span"));
         wait.until(ExpectedConditions.elementToBeClickable(paginationList.get(0)));
-        ;
         String foundAdsCountString = countWebElement.getText();
         foundAdsCountString = foundAdsCountString.substring(0, foundAdsCountString.indexOf(' '));
         foundAdsCountString = foundAdsCountString.replaceAll("\\.", "");
@@ -130,7 +123,7 @@ public class AllPages {
     }
 
     public void clickAddToAddressBook() {
-        btnAddToAddressBook.click();
+        buttonAddToAddressBook.click();
     }
 
     public void goRandomAdd() {

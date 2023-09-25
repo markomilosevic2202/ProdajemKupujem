@@ -1,4 +1,4 @@
-Feature: Automatic Testing
+Feature: Address book
 
   Scenario: In the Detaljno pretraži function, more ads were found than the specified number, for the specified parameters
     Given go to the home address
@@ -13,11 +13,10 @@ Feature: Automatic Testing
     Then the search result is greater than "1000" ads
 
 
-  Scenario: User cannot add a contact to the address book if the user is not logged in.
-
+  Scenario: It is not possible to add a contact from an ad if the user is not logged in
     Given go to the home address
-    And within a random ad that has an option
-    When on the Oglas page, click the button Dodaj u adresar
+    When within a random ad that has an option
+    And on the Oglas page, click the button Dodaj u adresar
     Then the login modal is displayed
 
 
